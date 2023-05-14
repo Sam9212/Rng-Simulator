@@ -6,6 +6,7 @@ use crate::{
         database::{
             retrieve_database,
             write_database,
+            get_exp_requirement,
             Item,
         },
         rng::{
@@ -82,6 +83,9 @@ pub async fn roll(ctx: Context<'_>) -> Result<(), Error> {
                 [Total Value]; UNKNOWN\n\
                 ```\
             ")
+            .footer(|f| {
+                f.text(format!("+{gained_xp}XP | {}/{} to level {}", user.experience - get_exp_requirement(user.level(0f64)), user.experience - get_exp_requirement(user.level(0f64) + 1), user.level(0f64)))
+            })
         })
     }).await?;
 
@@ -150,7 +154,9 @@ pub async fn roll(ctx: Context<'_>) -> Result<(), Error> {
 
     let db_guard = ctx.data().file_lock.lock().await;
     let mut database = retrieve_database(db_guard.as_str());
-    database.get_mut(ctx.author().id.as_u64()).unwrap().inventory.push(new_item);
+    let user = database.get_mut(ctx.author().id.as_u64()).unwrap();
+    user.inventory.push(new_item);
+    user.experience += gained_xp;
     write_database(db_guard.as_str(), database);
     Ok(())
 }
