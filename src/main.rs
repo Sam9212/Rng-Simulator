@@ -8,7 +8,7 @@ use commands::{
     ping::read_db,
     start::start,
     roll::roll,
-    inventory::inv,
+    inventory::profile,
 };
 use poise::{
     futures_util::lock::Mutex,
@@ -61,7 +61,7 @@ async fn main() {
             start(),
             read_db(),
             roll(),
-            inv(),
+            profile(),
         ],
         prefix_options: poise::PrefixFrameworkOptions {
             prefix: Some("r.".into()),
