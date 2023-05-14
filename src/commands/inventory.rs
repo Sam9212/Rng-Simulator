@@ -1,6 +1,6 @@
 use crate::utils::rng::{get_rarity_name, get_class_name};
 
-use crate::{Context, Error, utils::database::retrieve_database};
+use crate::{Context, Error, utils::database::retrieve_database, utils::database::get_exp_requirement};
 
 #[poise::command(prefix_command, aliases("inv"))]
 pub async fn profile(ctx: Context<'_>) -> Result<(), Error> {
@@ -30,9 +30,11 @@ pub async fn profile(ctx: Context<'_>) -> Result<(), Error> {
             Inventory: {:.2}\n\
             Networth: {:.2}```",usr.balance, usr.inventory_value(), usr.balance+ usr.inventory_value()) , true);
 
-            em.field("Levels", format!("
-            
-            "), true);
+            em.field("Levels", format!("\
+            ```ini\n\
+            Level: {}\n\
+            XP: {:.2}/{:.2}\n\
+            Total XP: {}```", usr.level(0f64), usr.experience, get_exp_requirement(usr.level(0f64)+1), "total xp"), true);
             for i in 0..usr.inventory.len(){
                 em.field(format!("Item {}", i+1), format!("\
                 ```ini\n\
