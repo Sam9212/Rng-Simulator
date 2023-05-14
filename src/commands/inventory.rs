@@ -18,6 +18,6 @@ pub async fn inv(ctx: Context<'_>) -> Result<(), Error> {
     }
 
     let usr_inventory = &db.get(id).unwrap().inventory;
-    ctx.say(format!("inventory: {:?}", usr_inventory)).await?;
+    ctx.say(format!("items: {:?}", usr_inventory)).await?;
     Ok(())
 }
