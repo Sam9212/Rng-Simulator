@@ -1,9 +1,6 @@
-use std::fmt::format;
-
-use poise::futures_util::future::ok;
 use crate::utils::rng::{get_rarity_name, get_class_name};
 
-use crate::{Context, Error, utils::database::retrieve_database, utils::database::User};
+use crate::{Context, Error, utils::database::retrieve_database};
 
 #[poise::command(prefix_command, aliases("inv"))]
 pub async fn profile(ctx: Context<'_>) -> Result<(), Error> {
@@ -27,6 +24,11 @@ pub async fn profile(ctx: Context<'_>) -> Result<(), Error> {
         cr.reply(true);
         cr.embed(|em| {
             em.title(format!("Showing **{}'s** profile", ctx.author().name));
+            em.field("Wealth", format!("\
+            Money: {}\n\
+            Inventory: {}\n\
+            Networth: {}
+            ",usr.balance, "ee", "e") , true);
             for i in 0..usr.inventory.len(){
                 em.field(format!("Item {}", i+1), format!("\
                 ```ini\n\
