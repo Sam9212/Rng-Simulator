@@ -1,9 +1,6 @@
-use std::fmt::format;
-
-use poise::futures_util::future::ok;
 use crate::utils::rng::{get_rarity_name, get_class_name};
 
-use crate::{Context, Error, utils::database::retrieve_database, utils::database::User};
+use crate::{Context, Error, utils::database::retrieve_database};
 
 #[poise::command(prefix_command, aliases("inv"))]
 pub async fn profile(ctx: Context<'_>) -> Result<(), Error> {
