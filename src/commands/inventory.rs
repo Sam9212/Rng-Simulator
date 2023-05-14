@@ -25,10 +25,14 @@ pub async fn profile(ctx: Context<'_>) -> Result<(), Error> {
         cr.embed(|em| {
             em.title(format!("Showing **{}'s** profile", ctx.author().name));
             em.field("Wealth", format!("\
-            Money: {}\n\
-            Inventory: {}\n\
-            Networth: {}
-            ",usr.balance, "ee", "e") , true);
+            ```ini\n\
+            Money: {:.2}\n\
+            Inventory: {:.2}\n\
+            Networth: {:.2}```",usr.balance, usr.inventory_value(), usr.balance+ usr.inventory_value()) , true);
+
+            em.field("Levels", format!("
+            
+            "), true);
             for i in 0..usr.inventory.len(){
                 em.field(format!("Item {}", i+1), format!("\
                 ```ini\n\
