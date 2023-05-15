@@ -13,7 +13,7 @@ use commands::{
 use poise::{
     futures_util::lock::Mutex,
     serenity_prelude as serenity,
-    FrameworkError::{Setup, Command},
+    FrameworkError::{Setup, Command}, FrameworkContext,
 };
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
@@ -30,6 +30,14 @@ async fn on_error(error: poise::FrameworkError<'_, Data, Error>) {
         Command { error, ctx } => println!("Error with command `{}`: {:?}", ctx.command().name, error),
         _ => {}
     }
+}
+async fn event_handler<'a, U, E>(
+    ctx: &serenity::Context,
+    event: &poise::Event<'a>,
+    _framework: FrameworkContext<'a, U, E>,
+) -> Result<(), Error>{
+    println!("event: {}", event.name());
+    Ok(())
 }
 
 
@@ -54,7 +62,6 @@ async fn main() {
         }
     }
 
-
     let options = poise::FrameworkOptions {
         commands: vec![
             ping(),
@@ -68,6 +75,7 @@ async fn main() {
             ..Default::default()
         },
         on_error: |error| Box::pin(on_error(error)),
+        event_handler: |ctx, event, FrameworkContext, _|  Box::pin(async move { event_handler(ctx, event, FrameworkContext).await }),
         ..Default::default()
     };
 
@@ -86,4 +94,6 @@ async fn main() {
         .run()
         .await
         .unwrap();
+
+
 }

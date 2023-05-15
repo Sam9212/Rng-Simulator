@@ -1,3 +1,6 @@
+use crate::serenity;
+use dotenv::dotenv;
+
 use crate::utils::rng::{get_rarity_name, get_class_name};
 
 use crate::{Context, Error, utils::database::retrieve_database, utils::database::get_exp_requirement};
@@ -34,7 +37,7 @@ pub async fn profile(ctx: Context<'_>) -> Result<(), Error> {
             ```ini\n\
             Level: {}\n\
             XP: {:.2}/{:.2}\n\
-            Total XP: {}```", usr.level(0f64), usr.experience, get_exp_requirement(usr.level(0f64)+1), "total xp"), true);
+            Total XP: {}```", usr.level(0f64), usr.experience, get_exp_requirement(usr.level(0f64)+1)- get_exp_requirement(usr.level(0f64)), "total xp"), true);
             for i in 0..usr.inventory.len(){
                 em.field(format!("Item {}", i+1), format!("\
                 ```ini\n\
@@ -49,8 +52,20 @@ pub async fn profile(ctx: Context<'_>) -> Result<(), Error> {
                 }
             }
             em
+        });
+
+        use crate::serenity::{CreateComponents, CreateActionRow, CreateButton};
+
+        cr.components(|cc: &mut CreateComponents|{
+            cc.create_action_row(|car: &mut CreateActionRow|{
+                car.create_button(|cb: &mut CreateButton|{
+                    cb.
+                    label("test")
+                    .custom_id(1)
+                })
+            });
+            cc
         })
     }).await?;
-
     Ok(())
 }
